@@ -19,7 +19,6 @@
     <Compile Include="ContractExtensions.fs" />
     <Compile Include="Internal.fs" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="NCoreUtils.CaseInsensitive" Version="1.0.1" />
     <PackageReference Include="NCoreUtils.FSharp" Version="2.0.2" />

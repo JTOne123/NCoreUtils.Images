@@ -15,7 +15,7 @@
     <Compile Include="Image.fs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Magick.NET-Q16-x64" Version="7.0.7.900" />
+    <PackageReference Include="Magick.NET-Q16-x64" Version="7.9.0.1" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />

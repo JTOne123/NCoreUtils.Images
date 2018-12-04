@@ -1,17 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net471</TargetFrameworks>
     <Version>2.0.15</Version>
   </PropertyGroup>
-
+  <!-- mono fix -->
+  <PropertyGroup>
+    <TargetIsMono Condition="$(TargetFramework.StartsWith('net4')) and '$(OS)' == 'Unix'">true</TargetIsMono>
+    <BaseFrameworkPathOverrideForMono Condition="'$(BaseFrameworkPathOverrideForMono)' == '' AND '$(TargetIsMono)' == 'true' AND EXISTS('/usr/lib/mono')">/usr/lib/mono</BaseFrameworkPathOverrideForMono>
+    <FrameworkPathOverride Condition="'$(BaseFrameworkPathOverrideForMono)' != '' AND '$(TargetFramework)' == 'net471'">$(BaseFrameworkPathOverrideForMono)/4.7.1-api</FrameworkPathOverride>
+    <EnableFrameworkPathOverride Condition="'$(BaseFrameworkPathOverrideForMono)' != ''">true</EnableFrameworkPathOverride>
+    <AssemblySearchPaths Condition="'$(BaseFrameworkPathOverrideForMono)' != ''">$(FrameworkPathOverride)/Facades;$(AssemblySearchPaths)</AssemblySearchPaths>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="ServiceCollectionExtensions.fs" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\NCoreUtils.Images.DependencyInjection\NCoreUtils.Images.DependencyInjection.fsproj" />
     <ProjectReference Include="..\NCoreUtils.Images.Core\NCoreUtils.Images.Core.fsproj" />
   </ItemGroup>
-
+  <ItemGroup Condition="'$(TargetFramework)' == 'net471'">
+    <Reference Include="netstandard" />
+  </ItemGroup>
 </Project>

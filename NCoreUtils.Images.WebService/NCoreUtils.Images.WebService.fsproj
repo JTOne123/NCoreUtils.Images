@@ -1,11 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFrameworks>netcoreapp2.2;net471</TargetFrameworks>
     <IsPackable>False</IsPackable>
     <Version>2.0.15</Version>
     <ServerGarbageCollection>false</ServerGarbageCollection>
     <RetainVMGarbageCollection>false</RetainVMGarbageCollection>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+  </PropertyGroup>
+  <!-- mono fix -->
+  <PropertyGroup>
+    <TargetIsMono Condition="$(TargetFramework.StartsWith('net4')) and '$(OS)' == 'Unix'">true</TargetIsMono>
+    <BaseFrameworkPathOverrideForMono Condition="'$(BaseFrameworkPathOverrideForMono)' == '' AND '$(TargetIsMono)' == 'true' AND EXISTS('/usr/lib/mono')">/usr/lib/mono</BaseFrameworkPathOverrideForMono>
+    <FrameworkPathOverride Condition="'$(BaseFrameworkPathOverrideForMono)' != '' AND '$(TargetFramework)' == 'net471'">$(BaseFrameworkPathOverrideForMono)/4.7.1-api</FrameworkPathOverride>
+    <EnableFrameworkPathOverride Condition="'$(BaseFrameworkPathOverrideForMono)' != ''">true</EnableFrameworkPathOverride>
+    <AssemblySearchPaths Condition="'$(BaseFrameworkPathOverrideForMono)' != ''">$(FrameworkPathOverride)/Facades;$(AssemblySearchPaths)</AssemblySearchPaths>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="GCMiddleware.fs" />
@@ -38,6 +46,11 @@
     <ProjectReference Include="..\NCoreUtils.Images.ImageMagick\NCoreUtils.Images.ImageMagick.fsproj" />
     <ProjectReference Include="..\NCoreUtils.Images.WebService.Shared\NCoreUtils.Images.WebService.Shared.fsproj" />
     <ProjectReference Include="..\NCoreUtils.Images.Optimization.External\NCoreUtils.Images.Optimization.External.fsproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net471'">
+    <Reference Include="netstandard" />
+    <Reference Include="System.IO" />
+    <Reference Include="System.Runtime" />
   </ItemGroup>
   <Target Name="DockerBuild">
     <!-- Ensure properties -->

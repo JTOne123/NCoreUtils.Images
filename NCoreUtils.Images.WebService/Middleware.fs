@@ -147,6 +147,7 @@ module internal Middleware =
     try
       do! acquire logger acquired semaphore
       let dest = HttpContext.response httpContext |> HttpResponseDestination
+      logger.LogTrace "About to execute resize operation."
       return! handle (fun () -> imageResizer.AsyncResize (httpContext.Request.Body, dest, options))
     finally
       do
