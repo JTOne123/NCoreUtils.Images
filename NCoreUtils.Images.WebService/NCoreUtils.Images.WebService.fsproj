@@ -43,7 +43,8 @@
     <PackageReference Include="System.Threading.ThreadPool" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NCoreUtils.Images.ImageMagick\NCoreUtils.Images.ImageMagick.fsproj" />
+    <ProjectReference Include="..\NCoreUtils.Images\NCoreUtils.Images.fsproj" />
+    <ProjectReference Include="..\NCoreUtils.Images.Provider.ImageSharp\NCoreUtils.Images.Provider.ImageSharp.fsproj" />
     <ProjectReference Include="..\NCoreUtils.Images.WebService.Shared\NCoreUtils.Images.WebService.Shared.fsproj" />
     <ProjectReference Include="..\NCoreUtils.Images.Optimization.External\NCoreUtils.Images.Optimization.External.fsproj" />
   </ItemGroup>

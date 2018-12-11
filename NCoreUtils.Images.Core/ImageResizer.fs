@@ -133,7 +133,6 @@ type ImageResizer =
         { new IDependentStreamTransformation<_> with
             member __.Dispose () = ()
             member __.AsyncPerform (input, dependentOutput) = async {
-              this.logger.LogDebug (null, "About to create image")
               use! image = this.provider.AsyncFromStream input
               this.logger.LogDebug (null, "Created image")
               let imageType =
@@ -162,7 +161,9 @@ type ImageResizer =
             (fun imageType ->
               this.logger.LogDebug (null, "Getting optional optimizations")
               setContentInfo <| ContentInfo (contentType = ImageType.toMediaType imageType)
-              this.TryGetOptimizationTransformation options imageType
+              let res = this.TryGetOptimizationTransformation options imageType
+              this.logger.LogDebug (null, sprintf "Got optional optimizations: %A" res)
+              res
             )
         this.logger.LogDebug (null, "About to execute pipeline")
         do! pipeline.AsyncPerform (input, output)

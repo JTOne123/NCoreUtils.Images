@@ -21,6 +21,7 @@ type JpegoptimOptimization (logger : ILog<JpegoptimOptimization>) =
 
 
   member __.AsyncResOptimize (input : Stream, output : Stream) =
+    printfn "Runnung jpegoptim"
     let startInfo =
       ProcessStartInfo (
         FileName               = "jpegoptim",
@@ -33,10 +34,12 @@ type JpegoptimOptimization (logger : ILog<JpegoptimOptimization>) =
     let p = new Process (StartInfo = startInfo)
     match p.Start () with
     | false ->
+      eprintfn "Unable to start jpegoptim"
       ImageResizerError.optimizationFailedf "jpegoptim" "Failed to start process with [FileName = %s, Arguments = %s]" startInfo.FileName startInfo.Arguments
       |> Error
       |> async.Return
     | _ ->
+      printfn "Started jpegoptim"
       let before = ref 0L
       let after = ref 0L
       async {
@@ -80,7 +83,9 @@ type JpegoptimOptimization (logger : ILog<JpegoptimOptimization>) =
     return
       match res with
       | Ok result -> result
-      | Error err -> err.RaiseException () }
+      | Error err ->
+        eprintfn "%A" err
+        err.RaiseException () }
   interface IImageOptimization with
     member __.Dispose () = ()
     member __.Supports imageType = StringComparer.OrdinalIgnoreCase.Equals ("jpg", imageType) || StringComparer.OrdinalIgnoreCase.Equals ("jpeg", imageType)

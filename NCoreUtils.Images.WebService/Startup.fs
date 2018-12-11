@@ -46,13 +46,14 @@ type Startup (env : IHostingEnvironment) =
       .AddSingleton(JsonSerializerSettings (ReferenceLoopHandling = ReferenceLoopHandling.Ignore, ContractResolver = CamelCasePropertyNamesContractResolver ()))
       .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
       .AddSingletonImageOptimization<JpegoptimOptimization>()
-      .AddImageMagickResizer()
+      // .AddImageMagickResizer()
+      .AddCoreImageResizer<NCoreUtils.Images.ImageSharp.ImageProvider>(ServiceLifetime.Singleton)
       |> ignore
 
   member __.Configure (app: IApplicationBuilder, serviceConfiguration : ServiceConfiguration) =
     let semaphore = new SemaphoreSlim (serviceConfiguration.MaxConcurrentOps, serviceConfiguration.MaxConcurrentOps)
 
-    ImageMagick.MagickNET.SetLogEvents ImageMagick.LogEvents.None
+    // ImageMagick.MagickNET.SetLogEvents ImageMagick.LogEvents.None
     // ImageMagick.MagickNET.Log.AddHandler (fun _ e -> printfn "%s" e.Message)
 
     app

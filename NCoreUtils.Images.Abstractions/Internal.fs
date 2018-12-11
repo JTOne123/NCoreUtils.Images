@@ -8,7 +8,6 @@ open System.Threading
 open System.Threading.Tasks
 open NCoreUtils
 open NCoreUtils.Images
-open NCoreUtils.Images
 
 type
   [<Struct>]
