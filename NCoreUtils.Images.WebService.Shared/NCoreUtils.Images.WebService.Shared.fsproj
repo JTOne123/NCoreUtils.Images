@@ -24,5 +24,8 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
   </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net452' OR '$(OS)' == 'Unix'">
+    <PackageReference Include="FSharp.Core" Version="4.5.2" />
+  </ItemGroup>
 
 </Project>

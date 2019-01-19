@@ -17,4 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\NCoreUtils.Images.Abstractions\NCoreUtils.Images.Abstractions.fsproj" />
   </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net471' OR '$(OS)' == 'Unix'">
+    <PackageReference Include="FSharp.Core" Version="4.5.2" />
+  </ItemGroup>
 </Project>

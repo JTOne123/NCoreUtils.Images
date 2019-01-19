@@ -82,6 +82,8 @@ module private ImageHelpers =
 
 type ImageProvider () =
 
+  do printfn "ImageProvider ctor"
+
   member this.FromStream (stream : Stream) =
     new Image (new MagickImage (stream), this)
   interface IImageProvider with
@@ -207,6 +209,7 @@ and
       member this.GetImageInfo () = this.GetImageInfo ()
       member this.Dispose () =
         if 0 = Interlocked.CompareExchange (&this.isDisposed, 1, 0) then
+          printfn "Disposing native"
           this.native.Dispose ()
     interface IDirectImage with
       member this.AsyncSaveTo (path, quality) =

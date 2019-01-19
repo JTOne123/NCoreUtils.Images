@@ -134,14 +134,12 @@ type ImageResizer =
             member __.Dispose () = ()
             member __.AsyncPerform (input, dependentOutput) = async {
               use! image = this.provider.AsyncFromStream input
-              this.logger.LogDebug (null, "Created image")
               let imageType =
                 match decideImageType image options with
                 | Error err    -> err.RaiseException ()
                 | Ok imageType -> imageType
               // setContentType <| ImageType.toMediaType imageType
               let output = dependentOutput imageType
-              this.logger.LogDebug (null, "Got output")
               let resizer = factory.CreateResizer (image, options)
               image.Resize resizer
               let quality = this.DecideQuality options imageType
@@ -154,20 +152,14 @@ type ImageResizer =
     destination.AsyncWriteDelayed
       (fun setContentInfo output -> async {
         let resizeTransformation = this.CreateTransformation options
-        this.logger.LogDebug (null, "Created resizte transformation")
         use pipeline =
           StreamTransformation.chainDependent
             resizeTransformation
             (fun imageType ->
-              this.logger.LogDebug (null, "Getting optional optimizations")
               setContentInfo <| ContentInfo (contentType = ImageType.toMediaType imageType)
-              let res = this.TryGetOptimizationTransformation options imageType
-              this.logger.LogDebug (null, sprintf "Got optional optimizations: %A" res)
-              res
+              this.TryGetOptimizationTransformation options imageType
             )
-        this.logger.LogDebug (null, "About to execute pipeline")
         do! pipeline.AsyncPerform (input, output)
-        this.logger.LogDebug (null, "Pipeline executed")
         do! output.AsyncFlush ()
       })
 

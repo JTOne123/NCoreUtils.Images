@@ -26,4 +26,7 @@
     <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net452' OR '$(OS)' == 'Unix'">
+    <PackageReference Include="FSharp.Core" Version="4.5.2" />
+  </ItemGroup>
 </Project>

@@ -46,8 +46,8 @@ type Startup (env : IHostingEnvironment) =
       .AddSingleton(JsonSerializerSettings (ReferenceLoopHandling = ReferenceLoopHandling.Ignore, ContractResolver = CamelCasePropertyNamesContractResolver ()))
       .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
       .AddSingletonImageOptimization<JpegoptimOptimization>()
-      // .AddImageMagickResizer()
-      .AddCoreImageResizer<NCoreUtils.Images.ImageSharp.ImageProvider>(ServiceLifetime.Singleton)
+      .AddImageMagickResizer()
+      // .AddCoreImageResizer<NCoreUtils.Images.ImageSharp.ImageProvider>(ServiceLifetime.Singleton)
       |> ignore
 
   member __.Configure (app: IApplicationBuilder, serviceConfiguration : ServiceConfiguration) =

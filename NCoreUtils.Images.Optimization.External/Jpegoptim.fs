@@ -21,7 +21,6 @@ type JpegoptimOptimization (logger : ILog<JpegoptimOptimization>) =
 
 
   member __.AsyncResOptimize (input : Stream, output : Stream) =
-    printfn "Runnung jpegoptim"
     let startInfo =
       ProcessStartInfo (
         FileName               = "jpegoptim",
@@ -39,7 +38,6 @@ type JpegoptimOptimization (logger : ILog<JpegoptimOptimization>) =
       |> Error
       |> async.Return
     | _ ->
-      printfn "Started jpegoptim"
       let before = ref 0L
       let after = ref 0L
       async {

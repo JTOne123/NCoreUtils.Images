@@ -24,4 +24,7 @@
     <PackageReference Include="NCoreUtils.IO" Version="2.0.3-alpha1" />
     <PackageReference Include="NCoreUtils.Linq" Version="1.0.5" />
   </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net452' OR '$(OS)' == 'Unix'">
+    <PackageReference Include="FSharp.Core" Version="4.5.2" />
+  </ItemGroup>
 </Project>
