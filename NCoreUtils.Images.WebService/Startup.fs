@@ -7,7 +7,6 @@ open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Logging
 open NCoreUtils.AspNetCore
-open NCoreUtils.Logging
 open NCoreUtils.Images
 open Newtonsoft.Json
 open Newtonsoft.Json.Serialization
@@ -46,12 +45,8 @@ type Startup (env : IHostingEnvironment) =
       .AddLogging(fun b ->
         b.ClearProviders()
           .SetMinimumLevel(LogLevel.Information)
-          |> ignore
-        match env.IsDevelopment () with
-        | true -> b.AddConsole () |> ignore
-        | _    -> b.AddGoogleSink (configuration.GetSection "Google") |> ignore
+          .AddConsole () |> ignore
       )
-      .AddPrePopulatedLoggingContext()
       .AddSingleton(JsonSerializerSettings (ReferenceLoopHandling = ReferenceLoopHandling.Ignore, ContractResolver = CamelCasePropertyNamesContractResolver ()))
       .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
       .AddSingletonImageOptimization<JpegoptimOptimization>()
@@ -67,6 +62,5 @@ type Startup (env : IHostingEnvironment) =
     // ImageMagick.MagickNET.Log.AddHandler (fun _ e -> printfn "%s" e.Message)
 
     app
-      .UsePrePopulateLoggingContext()
       .Use(GCMiddleware.run)
       .Use(Middleware.run semaphore) |> ignore

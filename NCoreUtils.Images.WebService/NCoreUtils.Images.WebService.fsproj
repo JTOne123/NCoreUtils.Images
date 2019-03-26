@@ -20,7 +20,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
-    <PackageReference Include="NCoreUtils.AspNetCore.Logging.Google" Version="2.0.3-alpha4" />
     <PackageReference Include="NCoreUtils.FSharp" Version="2.0.2" />
     <PackageReference Include="NCoreUtils.FSharp.AspNetCore" Version="2.0.3-alpha0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
