@@ -110,6 +110,7 @@ type GoogleStorageRecordProducer =
   interface ISerializableImageProducer with
     member this.AsyncProduce output = async {
       let! token      = GoogleStorageCredential.asyncGetAccessToken GoogleStorageCredential.readOnlyScopes this.Credential
+      // TODO: use factory
       use  client     = new HttpClient ()
       let  requestUri = sprintf "https://www.googleapis.com/storage/v1/b/%s/o/%s?alt=media" this.Uri.Host (this.Uri.LocalPath.Trim '/' |> Uri.EscapeDataString )
       use  request    = new HttpRequestMessage (HttpMethod.Get, requestUri)

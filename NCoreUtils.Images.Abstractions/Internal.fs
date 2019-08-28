@@ -108,6 +108,8 @@ type ImageType =
   /// TIF
   /// </summary>
   | Tiff = 4
+  /// WEBP
+  | Webp = 5
   /// <summary>
   /// Other
   /// </summary>
@@ -175,14 +177,15 @@ and
   [<Interface>]
   IImage =
     inherit IDisposable
-    abstract Provider     : IImageProvider
-    abstract Size         : Size
-    abstract ImageType    : ImageType
-    abstract AsyncWriteTo : stream:Stream * imageType:ImageType * [<Optional; DefaultParameterValue(85)>] quality:int -> Async<unit>
-    abstract AsyncSaveTo  : path:string   * imageType:ImageType * [<Optional; DefaultParameterValue(85)>] quality:int -> Async<unit>
-    abstract Resize       : size:Size      -> unit
-    abstract Crop         : rect:Rectangle -> unit
-    abstract GetImageInfo : unit -> ImageInfo
+    abstract Provider        : IImageProvider
+    abstract Size            : Size
+    abstract NativeImageType : obj
+    abstract ImageType       : ImageType
+    abstract AsyncWriteTo    : stream:Stream * imageType:ImageType * [<Optional; DefaultParameterValue(85)>] quality:int * [<Optional; DefaultParameterValue(true)>] optimize:bool -> Async<unit>
+    abstract AsyncSaveTo     : path:string   * imageType:ImageType * [<Optional; DefaultParameterValue(85)>] quality:int * [<Optional; DefaultParameterValue(true)>] optimize:bool -> Async<unit>
+    abstract Resize          : size:Size      -> unit
+    abstract Crop            : rect:Rectangle -> unit
+    abstract GetImageInfo    : unit -> ImageInfo
 
 type
   [<Interface>]
@@ -221,22 +224,24 @@ type
     val mutable private provider : IImageProvider
     new (provider) = { provider = provider }
     member this.Provider with [<MethodImpl(MethodImplOptions.AggressiveInlining)>] get () = this.provider
-    abstract Size         : Size
-    abstract ImageType    : ImageType
-    abstract WriteToAsync : stream:Stream * imageType:ImageType * [<Optional; DefaultParameterValue(85)>] quality:int * [<Optional>] cancellationToken:CancellationToken -> Task
-    abstract SaveToAsync  : path:string   * imageType:ImageType * [<Optional; DefaultParameterValue(85)>] quality:int * [<Optional>] cancellationToken:CancellationToken -> Task
-    abstract Resize       : size:Size      -> unit
-    abstract Crop         : rect:Rectangle -> unit
-    abstract GetImageInfo : unit -> ImageInfo
-    abstract Dispose      : disposing:bool -> unit
-    member inline internal this.WriteToDirect (stream, imageType, quality, cancellationToken) = this.WriteToAsync (stream, imageType, quality, cancellationToken)
-    member inline internal this.SaveToDirect (path, imageType, quality, cancellationToken) = this.SaveToAsync (path, imageType, quality, cancellationToken)
+    abstract Size            : Size
+    abstract NativeImageType : obj
+    abstract ImageType       : ImageType
+    abstract WriteToAsync    : stream:Stream * imageType:ImageType * [<Optional; DefaultParameterValue(85)>] quality:int * [<Optional; DefaultParameterValue(true)>] optimize:bool * [<Optional>] cancellationToken:CancellationToken -> Task
+    abstract SaveToAsync     : path:string   * imageType:ImageType * [<Optional; DefaultParameterValue(85)>] quality:int * [<Optional; DefaultParameterValue(true)>] optimize:bool * [<Optional>] cancellationToken:CancellationToken -> Task
+    abstract Resize          : size:Size      -> unit
+    abstract Crop            : rect:Rectangle -> unit
+    abstract GetImageInfo    : unit -> ImageInfo
+    abstract Dispose         : disposing:bool -> unit
+    member inline internal this.WriteToDirect (stream, imageType, quality, optimize, cancellationToken) = this.WriteToAsync (stream, imageType, quality, optimize, cancellationToken)
+    member inline internal this.SaveToDirect (path, imageType, quality, optimize, cancellationToken) = this.SaveToAsync (path, imageType, quality, optimize, cancellationToken)
     interface IImage with
-      member this.Provider  = this.Provider
-      member this.Size      = this.Size
-      member this.ImageType = this.ImageType
-      member this.AsyncWriteTo (stream, imageType, quality) = Async.Adapt (fun cancellationToken -> this.WriteToAsync (stream, imageType, quality, cancellationToken))
-      member this.AsyncSaveTo (path, imageType, quality) = Async.Adapt (fun cancellationToken -> this.SaveToAsync (path, imageType, quality, cancellationToken))
+      member this.Provider        = this.Provider
+      member this.Size            = this.Size
+      member this.NativeImageType = this.NativeImageType
+      member this.ImageType       = this.ImageType
+      member this.AsyncWriteTo (stream, imageType, quality, optimize) = Async.Adapt (fun cancellationToken -> this.WriteToAsync (stream, imageType, quality, optimize, cancellationToken))
+      member this.AsyncSaveTo  (path, imageType, quality, optimize) = Async.Adapt (fun cancellationToken -> this.SaveToAsync (path, imageType, quality, optimize, cancellationToken))
       member this.Resize size = this.Resize size
       member this.Crop   rect = this.Crop   rect
       member this.GetImageInfo () = this.GetImageInfo ()
@@ -283,14 +288,14 @@ type ImageExtensions =
 
   [<Extension>]
   [<MethodImpl(MethodImplOptions.AggressiveInlining)>]
-  static member WriteTo (this : IImage, stream, imageType, [<Optional; DefaultParameterValue(85)>] quality) =
-    this.AsyncWriteTo (stream, imageType, quality) |> Async.RunSynchronously
+  static member WriteTo (this : IImage, stream, imageType, [<Optional; DefaultParameterValue(85)>] quality, [<Optional; DefaultParameterValue(true)>] optimize) =
+    this.AsyncWriteTo (stream, imageType, quality, optimize) |> Async.RunSynchronously
 
   [<Extension>]
-  static member WriteToAsync (this : IImage, stream, imageType, [<Optional; DefaultParameterValue(85)>] quality, [<Optional>] cancellationToken) =
+  static member WriteToAsync (this : IImage, stream, imageType, [<Optional; DefaultParameterValue(85)>] quality, [<Optional; DefaultParameterValue(true)>] optimize, [<Optional>] cancellationToken) =
     match this with
-    | :? AsyncImage as inst -> inst.WriteToDirect (stream, imageType, quality, cancellationToken)
-    | _                     -> Async.StartAsTask (this.AsyncWriteTo (stream, imageType, quality), cancellationToken = cancellationToken) :> _
+    | :? AsyncImage as inst -> inst.WriteToDirect (stream, imageType, quality, optimize, cancellationToken)
+    | _                     -> Async.StartAsTask (this.AsyncWriteTo (stream, imageType, quality, optimize), cancellationToken = cancellationToken) :> _
 
   [<Extension>]
   [<MethodImpl(MethodImplOptions.AggressiveInlining)>]
@@ -298,10 +303,10 @@ type ImageExtensions =
     this.AsyncSaveTo (path, imageType, quality) |> Async.RunSynchronously
 
   [<Extension>]
-  static member SaveToAsync (this : IImage, path, imageType, [<Optional; DefaultParameterValue(85)>] quality, [<Optional>] cancellationToken) =
+  static member SaveToAsync (this : IImage, path, imageType, [<Optional; DefaultParameterValue(85)>] quality, [<Optional; DefaultParameterValue(true)>] optimize, [<Optional>] cancellationToken) =
     match this with
-    | :? AsyncImage as inst -> inst.SaveToDirect (path, imageType, quality, cancellationToken)
-    | _                     -> Async.StartAsTask (this.AsyncSaveTo (path, imageType, quality), cancellationToken = cancellationToken) :> _
+    | :? AsyncImage as inst -> inst.SaveToDirect (path, imageType, quality, optimize, cancellationToken)
+    | _                     -> Async.StartAsTask (this.AsyncSaveTo (path, imageType, quality, optimize), cancellationToken = cancellationToken) :> _
 
 // ********************************************************************************************************************
 // Resizing

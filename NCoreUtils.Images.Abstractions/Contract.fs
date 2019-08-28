@@ -2,18 +2,12 @@ namespace NCoreUtils.Images
 
 open System
 open System.IO
-open System.Net.Http
 open System.Runtime.InteropServices
 open System.Threading
 open System.Threading.Tasks
 open NCoreUtils
 open NCoreUtils.IO
 open System.Collections.Generic
-
-[<Interface>]
-[<AllowNullLiteral>]
-type IHttpClientFactoryAdapter =
-  abstract CreateClient : name:string -> HttpClient
 
 [<Interface>]
 type ILog =
@@ -45,9 +39,6 @@ type ISerializableImageDestination =
 
 [<Interface>]
 type IImageResizer =
-  // abstract AsyncResize       : source:Stream * destination:IImageDestination * options:ResizeOptions -> Async<unit>
-  // abstract AsyncResResize    : source:Stream * destination:IImageDestination * options:ResizeOptions -> Async<Result<unit, ImageResizerError>>
-  // abstract AsyncGetImageInfo : source:Stream -> Async<ImageInfo>
   abstract AsyncResize       : source:IStreamProducer * destination:IImageDestination * options:ResizeOptions -> Async<unit>
   abstract AsyncResResize    : source:IStreamProducer * destination:IImageDestination * options:ResizeOptions -> Async<Result<unit, ImageResizerError>>
   abstract AsyncGetImageInfo : source:IStreamProducer -> Async<ImageInfo>

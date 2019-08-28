@@ -3,10 +3,10 @@ namespace NCoreUtils.Images
 open System.Collections
 open System.Collections.Concurrent
 open System.Collections.Generic
+open System.Linq
 open System.Runtime.InteropServices
 open NCoreUtils
 open NCoreUtils.Images.Internal
-open NCoreUtils.Linq
 open System.Runtime.CompilerServices
 
 
@@ -38,7 +38,7 @@ and
     member this.TryGetValue (name : string, [<Out>] factory : byref<_>) =
       this.collection.TryGetValue (CaseInsensitive name, &factory)
     [<MethodImpl(MethodImplOptions.AggressiveInlining)>]
-    member private this.GetEnumerator () = (this.collection :> seq<_>).GetEnumerator().Select(fun kv -> KeyValuePair (kv.Key.ToLowerString (), kv.Value))
+    member private this.GetEnumerator () = (this.collection :> seq<_>).Select(fun kv -> KeyValuePair (kv.Key.ToLowerString (), kv.Value)).GetEnumerator()
     interface IEnumerable with
       member this.GetEnumerator () = this.GetEnumerator () :> _
     interface IReadOnlyDictionary<string, IResizerFactory> with

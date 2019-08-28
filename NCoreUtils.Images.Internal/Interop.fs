@@ -6,6 +6,8 @@ open System.Threading.Tasks
 open Microsoft.AspNetCore.Http
 open NCoreUtils
 
+module ValueOption = Microsoft.FSharp.Core.ValueOption
+
 [<AbstractClass>]
 type AsyncImageSourceExtractor () =
   abstract ExtractImageSourceAsync : httpContext:HttpContext * [<Optional>] cancelllationToken : CancellationToken -> Task<IImageSource>

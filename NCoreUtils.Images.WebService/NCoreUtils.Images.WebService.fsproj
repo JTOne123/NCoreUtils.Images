@@ -1,12 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <IsPackable>False</IsPackable>
-    <Version>2.1.0-alpha2</Version>
+    <Version>2.9.0-alpha3</Version>
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
     <ServerGarbageCollection>false</ServerGarbageCollection>
     <RetainVMGarbageCollection>false</RetainVMGarbageCollection>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <PublishReadyToRunShowWarnings>true</PublishReadyToRunShowWarnings>
+    <PublishTrimmed>true</PublishTrimmed>
+    <NoWarn>FS2003</NoWarn>
   </PropertyGroup>
+  <ItemGroup>
+    <TrimmerRootAssembly Include="System.Threading.Tasks" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="GCMiddleware.fs" />
     <Compile Include="Middleware.fs" />
@@ -15,15 +23,11 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
-    <PackageReference Include="NCoreUtils.FSharp" Version="2.0.2" />
-    <PackageReference Include="NCoreUtils.FSharp.AspNetCore" Version="2.0.3-alpha0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Update="FSharp.Core" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.0.0-preview8.19405.4" />
+    <PackageReference Include="NCoreUtils.FSharp.AspNetCore" Version="3.0.0-preview8.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <!-- forced newer versions -->
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
     <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
@@ -32,7 +36,9 @@
   <ItemGroup>
     <ProjectReference Include="..\NCoreUtils.Images.ImageMagick\NCoreUtils.Images.ImageMagick.fsproj" />
     <ProjectReference Include="..\NCoreUtils.Images.WebService.Shared\NCoreUtils.Images.WebService.Shared.fsproj" />
+    <!--
     <ProjectReference Include="..\NCoreUtils.Images.Optimization.External\NCoreUtils.Images.Optimization.External.fsproj" />
+    -->
     <ProjectReference Include="..\NCoreUtils.Images.Internal\NCoreUtils.Images.Internal.fsproj" />
     <ProjectReference Include="..\NCoreUtils.Images.Internal.GoogleCloudStorage\NCoreUtils.Images.Internal.GoogleCloudStorage.fsproj" />
   </ItemGroup>

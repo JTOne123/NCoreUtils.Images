@@ -51,7 +51,7 @@ type
   [<AllowNullLiteral>]
   [<Sealed>]
   [<StructuredFormatDisplay("{DisplayValue}")>]
-  ResizeOptions  ([<Optional>] imageType  : string,
+  ResizeOptions  ([<Optional; DefaultParameterValue(null:string)>] imageType  : string,
                   [<Optional>] width      : Nullable<int>,
                   [<Optional>] height     : Nullable<int>,
                   [<Optional>] resizeMode : string,

@@ -1,7 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
-    <Version>2.1.0-alpha2</Version>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net452</TargetFrameworks>
+    <Version>2.9.0-alpha3</Version>
+    <!-- NuGet -->
+    <PackageId>NCoreUtils.Images.Provider.ImageMagick</PackageId>
+    <Title>$(PackageId)</Title>
+    <Authors>Artyom Antyipin</Authors>
+    <Description>ImageMagick 7 provider for NCoreUtils image management library.</Description>
+    <Copyright>Artyom Antyipin</Copyright>
+    <RepositoryUrl>https://github.com/artyomszasa/NCoreUtils.Images.git</RepositoryUrl>
+    <PackageReleaseNotes>Target F# 4.6.</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <!-- Assembly Info -->
+    <Product>NCoreUtils</Product>
+    <AssemblyName>$(PackageId)</AssemblyName>
+    <AssemblyTitle>$(AssemblyName)</AssemblyTitle>
+    <!-- Compilation -->
+    <OutputType>Library</OutputType>
+    <DebugType>portable</DebugType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>FS2003</NoWarn>
   </PropertyGroup>
   <!-- mono fix -->
   <PropertyGroup>
@@ -15,10 +34,12 @@
     <Compile Include="Image.fs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Magick.NET-Q16-x64" Version="7.0.7.900" />
+    <PackageReference Update="FSharp.Core" Version="4.7.0" />
+    <PackageReference Include="Magick.NET-Q16-x64" Version="7.14.2" />
+    <PackageReference Include="Microsoft.NETCore.Platforms" Version="3.0.0-preview8.19405.3" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Update="System.ValueTuple" Version="4.5.0" />
     <Reference Include="System.Runtime" />
   </ItemGroup>
   <ItemGroup>

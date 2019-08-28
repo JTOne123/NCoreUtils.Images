@@ -12,9 +12,9 @@ open Newtonsoft.Json
 open Newtonsoft.Json.Serialization
 open System
 open System.Threading
-open NCoreUtils.Images.Optimization
+// open NCoreUtils.Images.Optimization
 
-type Startup (env : IHostingEnvironment) =
+type Startup (env : IWebHostEnvironment) =
 
   static let configureSourceExtractors =
     Action<CompositeImageSourceExtractorBuilder>
@@ -49,17 +49,19 @@ type Startup (env : IHostingEnvironment) =
       )
       .AddSingleton(JsonSerializerSettings (ReferenceLoopHandling = ReferenceLoopHandling.Ignore, ContractResolver = CamelCasePropertyNamesContractResolver ()))
       .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
-      .AddSingletonImageOptimization<JpegoptimOptimization>()
+      // .AddSingletonImageOptimization<JpegoptimOptimization>()
       .AddImageSourceExtractors(configureSourceExtractors)
       .AddImageDestinationExtractors(configureDestinationExtractors)
       .AddImageMagickResizer()
       |> ignore
 
-  member __.Configure (app: IApplicationBuilder, serviceConfiguration : ServiceConfiguration) =
+  member __.Configure (app: IApplicationBuilder, serviceConfiguration : ServiceConfiguration, loggerFactory : ILoggerFactory) =
     let semaphore = new SemaphoreSlim (serviceConfiguration.MaxConcurrentOps, serviceConfiguration.MaxConcurrentOps)
 
-    ImageMagick.MagickNET.SetLogEvents ImageMagick.LogEvents.None
-    // ImageMagick.MagickNET.Log.AddHandler (fun _ e -> printfn "%s" e.Message)
+    if "Development" = env.EnvironmentName then
+      let logger = loggerFactory.CreateLogger typeof<ImageMagick.MagickNET>
+      ImageMagick.MagickNET.SetLogEvents (ImageMagick.LogEvents.Image ||| ImageMagick.LogEvents.Coder ||| ImageMagick.LogEvents.Transform)
+      ImageMagick.MagickNET.Log.AddHandler (fun _ e -> logger.LogInformation (sprintf "[%s] %s" (e.EventType.ToString ()) e.Message))
 
     app
       .Use(GCMiddleware.run)

@@ -15,6 +15,8 @@ open System.Runtime.ExceptionServices
 open System.Threading.Tasks
 open NCoreUtils.IO
 
+module ValueOption = Microsoft.FSharp.Core.ValueOption
+
 type ServiceConfiguration () =
   member val MaxConcurrentOps = 20 with get, set
   override this.ToString () = sprintf "ServiceConfiguration[MaxConcurrentOps = %d]" this.MaxConcurrentOps

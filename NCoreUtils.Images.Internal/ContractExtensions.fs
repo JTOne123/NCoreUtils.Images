@@ -5,6 +5,8 @@ open System.Runtime.InteropServices
 open System.Threading
 open NCoreUtils
 
+module ValueOption = Microsoft.FSharp.Core.ValueOption
+
 [<Extension>]
 [<AbstractClass; Sealed>]
 type ImageSourceExtractorExtensions =

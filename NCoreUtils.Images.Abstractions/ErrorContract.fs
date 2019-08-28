@@ -122,6 +122,7 @@ and
 [<CompiledName("ImageResizerErrors")>]
 module ImageResizerError =
 
+  [<CompiledName("Generic")>]
   let generic error errorDescription = new ImageResizerError (error, errorDescription)
 
   [<CompiledName("InvalidMode")>]

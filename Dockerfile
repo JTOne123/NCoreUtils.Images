@@ -1,5 +1,7 @@
-FROM microsoft/dotnet:2.2-sdk AS build-env-ncimages
+# FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build-env-ncimages
+FROM gcr.io/hydra-hosting/aspnetcore-build:3.0.100-preview8-debian AS build-env-ncimages
 WORKDIR /app
+COPY ./NuGet.Config ./
 COPY ./NCoreUtils.Images.sln ./
 COPY ./NCoreUtils.Images/*.fsproj ./NCoreUtils.Images/
 COPY ./NCoreUtils.Images.Abstractions/*.fsproj ./NCoreUtils.Images.Abstractions/
@@ -13,7 +15,7 @@ COPY ./NCoreUtils.Images.WebService.Shared/*.fsproj ./NCoreUtils.Images.WebServi
 COPY ./NCoreUtils.Images.GoogleCloudStorage/*.fsproj ./NCoreUtils.Images.GoogleCloudStorage/
 COPY ./NCoreUtils.Images.Internal/*.fsproj ./NCoreUtils.Images.Internal/
 COPY ./NCoreUtils.Images.Internal.GoogleCloudStorage/*.fsproj ./NCoreUtils.Images.Internal.GoogleCloudStorage/
-RUN dotnet restore NCoreUtils.Images.WebService/NCoreUtils.Images.WebService.fsproj -r linux-x64
+RUN dotnet restore ./NCoreUtils.Images.WebService/*.fsproj -r linux-x64 -v n
 
 COPY ./NCoreUtils.Images/*.fs ./NCoreUtils.Images/
 COPY ./NCoreUtils.Images.Abstractions/*.fs ./NCoreUtils.Images.Abstractions/
@@ -31,78 +33,17 @@ RUN dotnet publish NCoreUtils.Images.WebService/NCoreUtils.Images.WebService.fsp
 
 # RUNTIME IMAGE
 
-FROM microsoft/dotnet:2.2-runtime-deps
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y apt-utils
-# install imagemagick dependencies
-RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-      curl \
-      libbsd0 \
-      libbz2-1.0 \
-      libc6 \
-      libcairo2 \
-      libcdt5 \
-      libcgraph6 \
-      libdatrie1 \
-      libdjvulibre21 \
-      libexpat1 \
-      libffi6 \
-      libfontconfig1 \
-      libfreetype6 \
-      libgcc1 \
-      libgcc-6-dev \
-      libglib2.0-0 \
-      libgomp1 \
-      libgraphite2-3 \
-      libgvc6 \
-      libharfbuzz0b \
-      libice6 \
-      libicu57 \
-      libilmbase12 \
-      libjbig0 \
-      liblcms2-2 \
-      libltdl7 \
-      liblzma5 \
-      libopenexr22 \
-      libopenjp2-7 \
-      libpango-1.0-0 \
-      libpangocairo-1.0-0 \
-      libpangoft2-1.0-0 \
-      libpathplan4 \
-      libpcre3 \
-      libpixman-1-0 \
-      libpng16-16 \
-      libraw15 \
-      libsm6 \
-      libstdc++6 \
-      libthai0 \
-      libtiff5 \
-      libuuid1 \
-      libwebp6 \
-      libx11-6 \
-      libxau6 \
-      libxcb1 \
-      libxcb-render0 \
-      libxcb-shm0 \
-      libxdmcp6 \
-      libxdot4 \
-      libxext6 \
-      libxml2 \
-      libxrender1 \
-      zlib1g \
-      jpegoptim
-# install libjpeg8
-RUN curl http://ftp.us.debian.org/debian/pool/main/libj/libjpeg8/libjpeg8_8d-1+deb7u1_amd64.deb > /tmp/libjpeg8_8d-1+deb7u1_amd64.deb \
-      && dpkg -i /tmp/libjpeg8_8d-1+deb7u1_amd64.deb \
-      && rm /tmp/libjpeg8_8d-1+deb7u1_amd64.deb
-# copy image magick
-COPY ./imagemagick-stretch-linux-x64/* /usr/lib/
-# add ImageMagick 7 to ldconfig
-RUN /sbin/ldconfig
+FROM mcr.microsoft.com/dotnet/core/runtime-deps:3.0
+# RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y apt-utils
+# # install imagemagick dependencies
+# RUN apt-get update \
+#     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+#       curl \
+#       jpegoptim
 # copy app
 WORKDIR /app
 ENV ASPNETCORE_ENVIRONMENT=Production
-ENV ASPNETCORE_URLS=http://+:80
+ENV ASPNETCORE_LISTEN_AT=0.0.0.0:80
 COPY --from=build-env-ncimages /app/out ./
-COPY ./docker/NCoreUtils.Images.WebService.runtimeconfig.json ./
+# COPY ./docker/NCoreUtils.Images.WebService.runtimeconfig.json ./
 ENTRYPOINT ["./NCoreUtils.Images.WebService"]

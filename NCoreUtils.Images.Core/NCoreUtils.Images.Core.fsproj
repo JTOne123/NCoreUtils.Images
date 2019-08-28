@@ -1,7 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
-    <Version>2.1.0-alpha2</Version>
+    <Version>2.9.0-alpha3</Version>
+    <!-- NuGet -->
+    <PackageId>NCoreUtils.Images.Core</PackageId>
+    <Title>$(PackageId)</Title>
+    <Authors>Artyom Antyipin</Authors>
+    <Description>NCoreUtils image management library core functionality.</Description>
+    <Copyright>Artyom Antyipin</Copyright>
+    <RepositoryUrl>https://github.com/artyomszasa/NCoreUtils.Images.git</RepositoryUrl>
+    <PackageReleaseNotes>Target F# 4.6.</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <!-- Assembly Info -->
+    <Product>NCoreUtils</Product>
+    <AssemblyName>$(PackageId)</AssemblyName>
+    <AssemblyTitle>$(AssemblyName)</AssemblyTitle>
+    <!-- Compilation -->
+    <OutputType>Library</OutputType>
+    <DebugType>portable</DebugType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>FS2003</NoWarn>
   </PropertyGroup>
   <!-- mono fix -->
   <PropertyGroup>
@@ -20,8 +39,12 @@
     <ProjectReference Include="..\NCoreUtils.Images.Abstractions\NCoreUtils.Images.Abstractions.fsproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NCoreUtils.FSharp" Version="2.0.2" />
-    <PackageReference Include="NCoreUtils.IO" Version="2.0.3-alpha3" />
-    <PackageReference Include="NCoreUtils.Linq" Version="1.0.5" />
+    <PackageReference Update="FSharp.Core" Version="4.7.0" />
+    <PackageReference Include="Microsoft.NETCore.Platforms" Version="3.0.0-preview8.19405.3" />
+    <PackageReference Include="NCoreUtils.IO" Version="3.0.0-preview8.1" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.6.0-preview8.19405.3" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <PackageReference Update="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 </Project>

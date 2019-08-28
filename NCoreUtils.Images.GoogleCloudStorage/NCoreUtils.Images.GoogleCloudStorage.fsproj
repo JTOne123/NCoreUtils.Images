@@ -1,7 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
-    <Version>2.1.0-alpha2</Version>
+    <TargetFrameworks>netstandard2.1;netstandard2.0;net452</TargetFrameworks>
+    <Version>2.9.0-alpha3</Version>
+    <!-- NuGet -->
+    <PackageId>NCoreUtils.Images.GoogleCloudStorage</PackageId>
+    <Title>$(PackageId)</Title>
+    <Authors>Artyom Antyipin</Authors>
+    <Description>Direct Google Cloud Storage support for NCoreUtils image management library.</Description>
+    <Copyright>Artyom Antyipin</Copyright>
+    <RepositoryUrl>https://github.com/artyomszasa/NCoreUtils.Images.git</RepositoryUrl>
+    <PackageReleaseNotes>Target F# 4.6.</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <!-- Assembly Info -->
+    <Product>NCoreUtils</Product>
+    <AssemblyName>$(PackageId)</AssemblyName>
+    <AssemblyTitle>$(AssemblyName)</AssemblyTitle>
+    <!-- Compilation -->
+    <OutputType>Library</OutputType>
+    <DebugType>portable</DebugType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>FS2003</NoWarn>
   </PropertyGroup>
   <!-- mono fix -->
   <PropertyGroup>
@@ -19,11 +38,22 @@
     <ProjectReference Include="..\NCoreUtils.Images.Abstractions\NCoreUtils.Images.Abstractions.fsproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Google.Apis.Auth" Version="1.38.0" />
-    <PackageReference Include="Google.Apis.Storage.v1" Version="1.38.0.1505" />
-    <PackageReference Include="NCoreUtils.IO" Version="2.0.3-alpha3" />
+    <PackageReference Update="FSharp.Core" Version="4.7.0" />
+    <!--
+    <PackageReference Include="Google.Apis" Version="1.40.3" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.40.3" />
+    <PackageReference Include="Google.Apis.Core" Version="1.40.3" />
+    -->
+    <PackageReference Include="Google.Apis.Storage.v1" Version="1.40.3.1635" />
+    <PackageReference Include="Microsoft.NETCore.Platforms" Version="3.0.0-preview8.19405.3" />
+    <PackageReference Include="Microsoft.NETCore.Targets" Version="3.0.0-preview8.19405.3" />
+    <PackageReference Include="NCoreUtils.FSharp.Net" Version="3.0.0-preview8.1" />
+    <PackageReference Include="NCoreUtils.IO" Version="3.0.0-preview8.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.6.0-preview8.19405.3" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
     <Reference Include="System.Runtime" />
+    <PackageReference Update="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 </Project>

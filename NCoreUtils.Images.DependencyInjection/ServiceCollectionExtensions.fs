@@ -21,20 +21,9 @@ module private Helpers =
 
   let inline toResizeArray (seq : seq<_>) = ResizeArray seq
 
-type internal HttpClientFactoryAdapter (realFactory : IHttpClientFactory) =
-  interface IHttpClientFactoryAdapter with
-    member __.CreateClient name = realFactory.CreateClient name
-
 [<Extension>]
 [<Sealed; AbstractClass>]
 type ServiceCollectionNCoreUtilsImagesExtensions =
-
-  [<Extension>]
-  [<MethodImpl(MethodImplOptions.AggressiveInlining)>]
-  static member AddImagesHttpClientAdapter (services : IServiceCollection) =
-    services
-      .AddHttpClient()
-      .AddSingleton<IHttpClientFactoryAdapter, HttpClientFactoryAdapter>()
 
   [<Extension>]
   [<MethodImpl(MethodImplOptions.AggressiveInlining)>]

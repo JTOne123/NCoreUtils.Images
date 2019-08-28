@@ -1,4 +1,8 @@
 .vs
 .vscode
+.ionide
 NCoreUtils*/bin
 NCoreUtils*/obj
+
+NCoreUtils.Images.Unit/report
+NCoreUtils.Images.Unit/coverage.opencover.xml

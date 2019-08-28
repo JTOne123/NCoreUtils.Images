@@ -1,7 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
-    <Version>2.1.0-alpha2</Version>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net452</TargetFrameworks>
+    <Version>2.9.0-alpha3</Version>
+    <!-- NuGet -->
+    <PackageId>NCoreUtils.Images.Client</PackageId>
+    <Title>$(PackageId)</Title>
+    <Authors>Artyom Antyipin</Authors>
+    <Description>NCoreUtils image resizer implementation for remote image service.</Description>
+    <Copyright>Artyom Antyipin</Copyright>
+    <RepositoryUrl>https://github.com/artyomszasa/NCoreUtils.Images.git</RepositoryUrl>
+    <PackageReleaseNotes>Target F# 4.6.</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <!-- Assembly Info -->
+    <Product>NCoreUtils</Product>
+    <AssemblyName>$(PackageId)</AssemblyName>
+    <AssemblyTitle>$(AssemblyName)</AssemblyTitle>
+    <!-- Compilation -->
+    <OutputType>Library</OutputType>
+    <DebugType>portable</DebugType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>FS2003</NoWarn>
   </PropertyGroup>
   <!-- mono fix -->
   <PropertyGroup>
@@ -12,6 +31,8 @@
     <AssemblySearchPaths Condition="'$(BaseFrameworkPathOverrideForMono)' != ''">$(FrameworkPathOverride)/Facades;$(AssemblySearchPaths)</AssemblySearchPaths>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ErrorContract.fs" />
+    <Compile Include="BufferedStreamProducer.fs" />
     <Compile Include="ImageResizerClient.fs" />
   </ItemGroup>
   <ItemGroup>
@@ -19,7 +40,15 @@
     <ProjectReference Include="..\NCoreUtils.Images.WebService.Shared\NCoreUtils.Images.WebService.Shared.fsproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NCoreUtils.IO" Version="2.0.3-alpha3" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Update="FSharp.Core" Version="4.7.0" />
+    <PackageReference Include="NCoreUtils.FSharp.Net" Version="3.0.0-preview8.1" />
+    <PackageReference Include="NCoreUtils.IO" Version="3.0.0-preview8.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <PackageReference Update="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net452' ">
+    <PackageReference Include="Microsoft.Extensions.Http" Version="3.0.0-preview8.19405.4" />
   </ItemGroup>
 </Project>
